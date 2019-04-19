@@ -1,0 +1,27 @@
+
+.notice-manager {
+    margin-bottom: 0.5rem;
+}
+
+.notice-manager-toggler {
+   cursor: pointer;
+   font-style: italic;
+}
+
+.notice-manager-ui {
+    display: none;
+    margin-top: 0.5rem;
+}
+
+.notice-manager-ui a {
+    all: unset;
+    color: white;
+    background-color: rgba(255, 136, 0, 0.8);
+    cursor: pointer;
+    padding: 0 1rem 0 1rem; 
+    margin-right: 0.5rem;
+}
+
+.notice-manager-ui a:hover {
+   background-color: rgba(255, 136, 0, 1);
+}
