@@ -1,233 +1,288 @@
+"use strict";
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 (function ($) {
   "use strict";
+
   $(function () {
-    const noticeManager = new NoticeManager();
+    var noticeManager = new NoticeManager();
   });
 
-  class NoticeManager {
-    constructor() {
-      this.noticeClasses = [".notice", ".update-nag", ".updated"];
+  var NoticeManager =
+  /*#__PURE__*/
+  function () {
+    function NoticeManager() {
+      _classCallCheck(this, NoticeManager);
 
-      // this.bans will be an array of Ban objects, noticeManagerBans is 'injected' by php
+      this.noticeClasses = [".notice", ".update-nag", ".updated"]; // this.bans will be an array of Ban objects, noticeManagerBans is 'injected' by php
+
       this.bans = this.initBans(noticeManagerBans);
       this.notices = this.initNotices();
       this.bannedNotices = this.getBannedNotices();
       this.hideBannedNotices();
     }
-
     /**
      * Returns an array of Ban objects from a plain array of objects
      * @param {array} all An array of objects containing info from a database for the banning
      */
-    initBans(all) {
-      let bans = [];
-      all.forEach(one => {
-        const mes = new Message();
-        mes.fromDB(one);
-        bans.push(mes);
-      });
-      return bans;
-    }
 
-    /**
-     * Gets all the DOM elements that are notices and makes a message out of it
-     */
-    initNotices() {
-      let notices = [];
-      const all = $(this.noticeClasses.join(", "));
-      all.each(i => {
-        const mes = new Message();
-        mes.fromDOM(all[i]);
-        notices.push(mes);
-      });
-      return notices;
-    }
 
-    /**
-     * Compare all bans with all notices,
-     * if true is returned add the notice to the return array
-     * TODO: This is a nested for loop which should be improved
-     */
-    getBannedNotices() {
-      let matches = [];
-      this.notices.forEach(notice => {
-        this.bans.forEach(ban => {
-          if (notice.compare(ban)) {
-            matches.push(notice);
-          }
+    _createClass(NoticeManager, [{
+      key: "initBans",
+      value: function initBans(all) {
+        var bans = [];
+        all.forEach(function (one) {
+          var mes = new Message();
+          mes.fromDB(one);
+          bans.push(mes);
         });
-      });
-      return matches;
-    }
+        return bans;
+      }
+      /**
+       * Gets all the DOM elements that are notices and makes a message out of it
+       */
 
-    /**
-     * Hides all the banned notices
-     */
-    hideBannedNotices() {
-      this.bannedNotices.forEach(notice => {
-        notice.hide();
-      });
-    }
-  }
+    }, {
+      key: "initNotices",
+      value: function initNotices() {
+        var notices = [];
+        var all = $(this.noticeClasses.join(", "));
+        all.each(function (i) {
+          var mes = new Message();
+          mes.fromDOM(all[i]);
+          notices.push(mes);
+        });
+        return notices;
+      }
+      /**
+       * Compare all bans with all notices,
+       * if true is returned add the notice to the return array
+       * TODO: This is a nested for loop which should be improved
+       */
 
-  class Message {
-    constructor() {
+    }, {
+      key: "getBannedNotices",
+      value: function getBannedNotices() {
+        var _this = this;
+
+        var matches = [];
+        this.notices.forEach(function (notice) {
+          _this.bans.forEach(function (ban) {
+            if (notice.compare(ban)) {
+              matches.push(notice);
+            }
+          });
+        });
+        return matches;
+      }
+      /**
+       * Hides all the banned notices
+       */
+
+    }, {
+      key: "hideBannedNotices",
+      value: function hideBannedNotices() {
+        this.bannedNotices.forEach(function (notice) {
+          notice.hide();
+        });
+      }
+    }]);
+
+    return NoticeManager;
+  }();
+
+  var Message =
+  /*#__PURE__*/
+  function () {
+    function Message() {
+      _classCallCheck(this, Message);
+
       this.body;
       this.element;
       this.bodyNoWhitespace;
       this.ui;
     }
-
     /**
      * The body itself does not have whitespace if it came from the db.
      * If it did not come from the db we replace all whitespace with nothing
      */
-    get bodyNoWhitespace() {
-      if (this.element) {
-        return this.body.replace(/\s/g, "");
+
+
+    _createClass(Message, [{
+      key: "fromDOM",
+
+      /**
+       * Constructs the message object by a DOM element
+       * @param {object} el DOM element
+       */
+      value: function fromDOM(el) {
+        this.body = el.innerText;
+        this.element = el;
+        this.addUI();
+        this.ui.show();
       }
-      return this.body;
-    }
+      /**
+       * Constructs the message object by a DB entry
+       * @param {object} data DB entry
+       */
 
-    /**
-     * Constructs the message object by a DOM element
-     * @param {object} el DOM element
-     */
-    fromDOM(el) {
-      this.body = el.innerText;
-      this.element = el;
-      this.addUI();
-      this.ui.show();
-    }
-
-    /**
-     * Constructs the message object by a DB entry
-     * @param {object} data DB entry
-     */
-    fromDB(data) {
-      this.body = data.body;
-    }
-
-    /**
-     * Hides a message
-     */
-    hide() {
-      if (this.element) {
-        this.element.style.display = "none";
+    }, {
+      key: "fromDB",
+      value: function fromDB(data) {
+        this.body = data.body;
       }
-    }
+      /**
+       * Hides a message
+       */
 
-    /**
-     * Returns true if the body's of the messages match
-     * @param {Message} mes What to compare it to
-     */
-    compare(mes) {
-      if (this.bodyNoWhitespace === mes.bodyNoWhitespace) {
-        return true;
+    }, {
+      key: "hide",
+      value: function hide() {
+        if (this.element) {
+          this.element.style.display = "none";
+        }
       }
-      return false;
-    }
+      /**
+       * Returns true if the body's of the messages match
+       * @param {Message} mes What to compare it to
+       */
 
-    /**
-     * Makes a new ui object and adds it to the message
-     */
-    addUI() {
-      const ui = new UI(this);
-      this.ui = ui;
-    }
-  }
+    }, {
+      key: "compare",
+      value: function compare(mes) {
+        if (this.bodyNoWhitespace === mes.bodyNoWhitespace) {
+          return true;
+        }
 
-  class UI {
-    constructor(mes) {
+        return false;
+      }
+      /**
+       * Makes a new ui object and adds it to the message
+       */
+
+    }, {
+      key: "addUI",
+      value: function addUI() {
+        var ui = new UI(this);
+        this.ui = ui;
+      }
+    }, {
+      key: "bodyNoWhitespace",
+      get: function get() {
+        if (this.element) {
+          return this.body.replace(/\s/g, "");
+        }
+
+        return this.body;
+      }
+    }]);
+
+    return Message;
+  }();
+
+  var UI =
+  /*#__PURE__*/
+  function () {
+    function UI(mes) {
+      _classCallCheck(this, UI);
+
       this.message = mes;
       this.html = this.initUI();
     }
-
     /**
      * Returns the current url without query params with a name beginning with notice-manager
      */
-    currentPageWithoutOurParams() {
-      // The url without query params
-      let redirectURL =
-        location.protocol + "//" + location.host + location.pathname;
-      // If there are query params currently
-      if (location.search) {
-        // Base array
-        let params = [];
-        // The search part of the url without the ?
-        const noQuestionMark = location.search.substring(1);
-        // Split the url on & because the & character specifies a new param
-        const parts = noQuestionMark.split("&");
-        // Populate param array with all the parameters
-        parts.forEach(v => {
-          params.push({
-            name: v.split("=")[0],
-            value: v.split("=")[1]
+
+
+    _createClass(UI, [{
+      key: "currentPageWithoutOurParams",
+      value: function currentPageWithoutOurParams() {
+        // The url without query params
+        var redirectURL = location.protocol + "//" + location.host + location.pathname; // If there are query params currently
+
+        if (location.search) {
+          // Base array
+          var params = []; // The search part of the url without the ?
+
+          var noQuestionMark = location.search.substring(1); // Split the url on & because the & character specifies a new param
+
+          var parts = noQuestionMark.split("&"); // Populate param array with all the parameters
+
+          parts.forEach(function (v) {
+            params.push({
+              name: v.split("=")[0],
+              value: v.split("=")[1]
+            });
+          }); // Take out all the params that start with notice-manager
+
+          params.filter(function (v) {
+            return v.name.substring(0, 13) === "notice-manager";
+          }); // Add the ?
+
+          redirectURL += "?"; // Add the params back to the url
+
+          params.map(function (v) {
+            return redirectURL += v.name + "=" + v.value;
           });
-        });
-        // Take out all the params that start with notice-manager
-        params.filter(v => v.name.substring(0, 13) === "notice-manager");
-        // Add the ?
-        redirectURL += "?";
-        // Add the params back to the url
-        params.map(v => (redirectURL += v.name + "=" + v.value));
-      }
-      return redirectURL;
-    }
+        }
 
-    /**
-     * Generates the ui's html
-     */
-    initUI() {
-      const baseURL =
-        location.protocol + "//" + location.host + location.pathname;
-      const redirectURL = this.currentPageWithoutOurParams();
-      const body = this.message.bodyNoWhitespace;
-      return `
-			<div class="notice-manager">
-				<div class="notice-manager-toggler">${i18n.manage_notice}</div>
-				<div class="notice-manager-ui" data-expanded="false">
-					<a href="${baseURL +
-            "?notice-manager-ban-body=" +
-            body +
-            "&notice-manager-ban-nice-body=" +
-            this.message.body +
-            "&notice-manager-redirect-url=" +
-            redirectURL}">
-						${i18n.ban_this_notice}				
-					</a>
-				</div>
-			</div>
-			`;
-    }
-
-    /**
-     * Adds the html of the ui to the message element
-     */
-    show() {
-      if (this.message.element) {
-        const domEl = $(this.html)[0];
-        this.message.element.appendChild(domEl);
-        const toggler = domEl.children[0];
-        const target = domEl.children[1];
-        toggler.addEventListener("click", () => {
-          this.handleClick(toggler, target);
-        });
+        return redirectURL;
       }
-    }
+      /**
+       * Generates the ui's html
+       */
 
-    /**
-     * Toggles expanding and collapsing of the ui
-     */
-    handleClick(clicked, target) {
-      const expanded = target.dataset.expanded;
-      if (expanded === "false") {
-        target.style.display = "block";
-        target.dataset.expanded = "true";
-      } else if (expanded === "true") {
-        target.style.display = "none";
-        target.dataset.expanded = "false";
+    }, {
+      key: "initUI",
+      value: function initUI() {
+        var baseURL = location.protocol + "//" + location.host + location.pathname;
+        var redirectURL = this.currentPageWithoutOurParams();
+        var body = this.message.bodyNoWhitespace;
+        return "\n              <div class=\"notice-manager\">\n                  <div class=\"notice-manager-toggler\">".concat(i18n.manage_notice, "</div>\n                  <div class=\"notice-manager-ui\" data-expanded=\"false\">\n                      <a href=\"").concat(baseURL + "?notice-manager-ban-body=" + body + "&notice-manager-ban-nice-body=" + this.message.body + "&notice-manager-redirect-url=" + redirectURL, "\">\n                          ").concat(i18n.ban_this_notice, "\t\t\t\t\n                      </a>\n                  </div>\n              </div>\n              ");
       }
-    }
-  }
+      /**
+       * Adds the html of the ui to the message element
+       */
+
+    }, {
+      key: "show",
+      value: function show() {
+        var _this2 = this;
+
+        if (this.message.element) {
+          var domEl = $(this.html)[0];
+          this.message.element.appendChild(domEl);
+          var toggler = domEl.children[0];
+          var target = domEl.children[1];
+          toggler.addEventListener("click", function () {
+            _this2.handleClick(toggler, target);
+          });
+        }
+      }
+      /**
+       * Toggles expanding and collapsing of the ui
+       */
+
+    }, {
+      key: "handleClick",
+      value: function handleClick(clicked, target) {
+        var expanded = target.dataset.expanded;
+
+        if (expanded === "false") {
+          target.style.display = "block";
+          target.dataset.expanded = "true";
+        } else if (expanded === "true") {
+          target.style.display = "none";
+          target.dataset.expanded = "false";
+        }
+      }
+    }]);
+
+    return UI;
+  }();
 })(jQuery);

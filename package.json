@@ -1,0 +1,28 @@
+{
+  "name": "notice-manager",
+  "version": "1.0.0",
+  "description": "A lightweight plugin that lets you organize notices and notifications from other plugins or Wordpress itself. This is done by banning the specific notices.",
+  "main": "js/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel src -d js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/laytan/notice-manager.git"
+  },
+  "author": "laytanl",
+  "license": "GPL-2.0-only",
+  "bugs": {
+    "url": "https://github.com/laytan/notice-manager/issues"
+  },
+  "homepage": "https://github.com/laytan/notice-manager#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.4.3",
+    "@babel/core": "^7.4.3",
+    "@babel/preset-env": "^7.4.3"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.4.3"
+  }
+}

@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Our whole plugin is only used in admin mode, so we return if we are not
 if ( ! is_admin() ) {
-    die;
+    return;
 }
 
 $base_url = plugin_dir_url( __FILE__ );
