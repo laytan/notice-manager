@@ -1,8 +1,9 @@
 # Notice Manager
 
 - Contributors: laytanl
-- Requires at least: 3.6
-- Tested up to: 5.1
+- Requires at least: 4.0
+- Tested up to: 5.1.1
+- Stable Tag: 1.0.0
 - Requires PHP: 5.6
 - License: GNU GENERAL PUBLIC LICENSE
 - License URI: LICENSE.txt
