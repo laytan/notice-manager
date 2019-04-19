@@ -1,11 +1,11 @@
 # Notice Manager
 
-Contributors: laytanl
-Requires at least: 3.6
-Tested up to: 5.1
-Requires PHP: 5.6
-License: GNU GENERAL PUBLIC LICENSE
-License URI: LICENSE.txt
+- Contributors: laytanl
+- Requires at least: 3.6
+- Tested up to: 5.1
+- Requires PHP: 5.6
+- License: GNU GENERAL PUBLIC LICENSE
+- License URI: LICENSE.txt
 
 A lightweight plugin that lets you organize notices and notifications from other plugins or Wordpress itself. This is done by banning the specific notices.
 
