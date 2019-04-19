@@ -68,10 +68,13 @@ if ( ! class_exists( 'Notice_Manager' ) ) {
         public function check_request()
         {   
             if( isset( $_GET['notice-manager-ban-body'] ) && isset( $_GET['notice-manager-ban-nice-body'] ) ) {
-                $this->database->insert_ban( $_GET['notice-manager-ban-body'], current_time( 'mysql' ), $_GET['notice-manager-ban-nice-body'] );
+                $body = sanitize_text_field( $_GET['notice-manager-ban-body'] );
+                $nice_body = sanitize_text_field( $_GET['notice-manager-ban-nice-body'] );
+                $this->database->insert_ban( $body , current_time( 'mysql' ), $nice_body );
                 
                 if ( isset( $_GET['notice-manager-redirect-url'] ) ) {
-                    $this->redirect( $_GET['notice-manager-redirect-url'] );
+                    $redirect_url = sanitize_url( $_GET['notice-manager-redirect-url'] );
+                    $this->redirect( $redirect_url );
                 } else {
                     $this->redirect( get_admin_url() );
                 }
@@ -88,11 +91,21 @@ if ( ! class_exists( 'Notice_Manager' ) ) {
 			wp_safe_redirect( $url );
 			die;
         }
-
+        /**
+         * Unban a banned notice
+         */
         public function unban( $id )
         {
-            $this->database->unban( $id );
-            $this->redirect( menu_page_url( 'notice-manager-page', false ) );
+            // If this is a valid request
+            if (
+                isset($_GET['action']) &&
+                isset($_GET['nonce']) &&
+                $_GET['action'] === 'notice-manager-unban' &&
+                wp_verify_nonce($_GET['nonce'], 'notice-manager-unban' )
+            ) {
+                $this->database->unban( $id );
+                $this->redirect( menu_page_url( 'notice-manager-page', false ) );
+            }
         }
 
         public function load_admin_page()

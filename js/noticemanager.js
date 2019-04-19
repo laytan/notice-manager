@@ -1,6 +1,6 @@
-(function($) {
+(function ($) {
   "use strict";
-  $(function() {
+  $(function () {
     const noticeManager = new NoticeManager();
   });
 
@@ -35,7 +35,6 @@
     initNotices() {
       let notices = [];
       const all = $(this.noticeClasses.join(", "));
-      console.log(all);
       all.each(i => {
         const mes = new Message();
         mes.fromDOM(all[i]);

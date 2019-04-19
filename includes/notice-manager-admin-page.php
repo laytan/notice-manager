@@ -21,15 +21,25 @@ ob_start();
         <p class="notice-manager-notice-text">
             <p>
             <?php _e( 'On', 'notice-manager' ); ?>
-            <?= $ban->time ?>
+            <?= esc_html($ban->time); ?>
             <?php _e( 'You banned:', 'notice-manager' ); ?>
             </p>
             <p>
-            <?= $ban->nice_body ?>
+            <?= esc_html($ban->nice_body); ?>
             </p>
         </p>
         <div class="notice-manager-ban-options">
-            <a href="tools.php?page=notice-manager-page&notice-manager-unban=<?= $ban->id ?>" class="notice-manager-ban-options-button">
+        <?php
+        $url = add_query_arg(
+            [
+                'action' => 'notice-manager-unban',
+                'notice-manager-unban'   => $ban->id,
+                'nonce'  => wp_create_nonce('notice-manager-unban'),
+            ],
+            menu_page_url('notice-manager-page', false)
+        );
+        ?>
+            <a href="<?= $url ?>" class="notice-manager-ban-options-button">
             <?php _e( 'Unban this notice', 'notice-manager' ); ?>
             </a>
         </div>
