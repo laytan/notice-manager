@@ -4,8 +4,17 @@
   "description": "A lightweight plugin that lets you organize notices and notifications from other plugins or Wordpress itself. This is done by banning the specific notices.",
   "main": "js/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "babel src -d js"
+    "test": "jest",
+    "build": "babel src -d js",
+    "watch": "npm-watch",
+    "build_babel": "npm run build"
+  },
+  "watch": {
+    "build_babel": {
+      "patterns": [
+        "src"
+      ]
+    }
   },
   "repository": {
     "type": "git",
@@ -20,7 +29,9 @@
   "devDependencies": {
     "@babel/cli": "^7.4.3",
     "@babel/core": "^7.4.3",
-    "@babel/preset-env": "^7.4.3"
+    "@babel/preset-env": "^7.4.3",
+    "jest": "^24.7.1",
+    "npm-watch": "^0.6.0"
   },
   "dependencies": {
     "@babel/polyfill": "^7.4.3"
