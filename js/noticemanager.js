@@ -16,11 +16,13 @@ if ('undefined' !== typeof jQuery) {
 var NoticeManager =
 /*#__PURE__*/
 function () {
-  function NoticeManager($) {
+  function NoticeManager() {
+    var $ = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : jQuery;
+
     _classCallCheck(this, NoticeManager);
 
-    this.$ = $;
-    this.noticeClasses = [".notice", ".update-nag", ".updated"]; // this.bans will be an array of Ban objects, noticeManagerBans is 'injected' by php
+    this.noticeClasses = [".notice", ".update-nag", ".updated"];
+    this.$ = jQuery; // this.bans will be an array of Ban objects, noticeManagerBans is 'injected' by php
 
     this.bans = this.initBans(noticeManagerBans);
     this.notices = this.initNotices();
@@ -36,11 +38,9 @@ function () {
   _createClass(NoticeManager, [{
     key: "initBans",
     value: function initBans(all) {
-      var _this = this;
-
       var bans = [];
       all.forEach(function (one) {
-        var mes = new Message(_this.$);
+        var mes = new Message();
         mes.fromDB(one);
         bans.push(mes);
       });
@@ -53,12 +53,10 @@ function () {
   }, {
     key: "initNotices",
     value: function initNotices() {
-      var _this2 = this;
-
       var notices = [];
       var all = this.$(this.noticeClasses.join(", "));
       all.each(function (i) {
-        var mes = new Message(_this2.$);
+        var mes = new Message();
         mes.fromDOM(all[i]);
         notices.push(mes);
       });
@@ -73,11 +71,11 @@ function () {
   }, {
     key: "getBannedNotices",
     value: function getBannedNotices() {
-      var _this3 = this;
+      var _this = this;
 
       var matches = [];
       this.notices.forEach(function (notice) {
-        _this3.bans.forEach(function (ban) {
+        _this.bans.forEach(function (ban) {
           if (notice.compare(ban)) {
             matches.push(notice);
           }
@@ -104,10 +102,9 @@ function () {
 var Message =
 /*#__PURE__*/
 function () {
-  function Message($) {
+  function Message() {
     _classCallCheck(this, Message);
 
-    this.$ = $;
     this.body;
     this.element;
     this.bodyNoWhitespace;
@@ -174,7 +171,7 @@ function () {
   }, {
     key: "addUI",
     value: function addUI() {
-      var ui = new UI(this, this.$);
+      var ui = new UI(this);
       this.ui = ui;
     }
   }, {
@@ -194,14 +191,17 @@ function () {
 var UI =
 /*#__PURE__*/
 function () {
-  function UI(mes, $) {
-    var i = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : i18n;
+  function UI(mes) {
+    var location = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : window.location;
+    var translated = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : i18n;
+    var $ = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : jQuery;
 
     _classCallCheck(this, UI);
 
-    this.$ = $;
     this.message = mes;
-    this.i18n = i;
+    this.location = location;
+    this.translated = translated;
+    this.$ = $;
     this.html = this.initUI();
   }
   /**
@@ -213,13 +213,13 @@ function () {
     key: "currentPageWithoutOurParams",
     value: function currentPageWithoutOurParams() {
       // The url without query params
-      var redirectURL = location.protocol + "//" + location.host + location.pathname; // If there are query params currently
+      var redirectURL = this.location.protocol + "//" + this.location.host + this.location.pathname; // If there are query params currently
 
-      if (location.search) {
+      if (this.location.search) {
         // Base array
         var params = []; // The search part of the url without the ?
 
-        var noQuestionMark = location.search.substring(1); // Split the url on & because the & character specifies a new param
+        var noQuestionMark = this.location.search.substring(1); // Split the url on & because the & character specifies a new param
 
         var parts = noQuestionMark.split("&"); // Populate param array with all the parameters
 
@@ -230,14 +230,18 @@ function () {
           });
         }); // Take out all the params that start with notice-manager
 
-        params.filter(function (v) {
-          return v.name.substring(0, 13) === "notice-manager";
+        params = params.filter(function (v) {
+          return v.name.substring(0, 14) !== "notice-manager";
         }); // Add the ?
 
         redirectURL += "?"; // Add the params back to the url
 
-        params.map(function (v) {
-          return redirectURL += v.name + "=" + v.value;
+        params.map(function (v, i) {
+          redirectURL += v.name + "=" + v.value;
+
+          if (i !== params.length - 1) {
+            redirectURL += '&';
+          }
         });
       }
 
@@ -250,10 +254,10 @@ function () {
   }, {
     key: "initUI",
     value: function initUI() {
-      var baseURL = location.protocol + "//" + location.host + location.pathname;
+      var baseURL = this.location.protocol + "//" + this.location.host + this.location.pathname;
       var redirectURL = this.currentPageWithoutOurParams();
       var body = this.message.bodyNoWhitespace;
-      return "\n              <div class=\"notice-manager\">\n                  <div class=\"notice-manager-toggler\">".concat(this.i18n.manage_notice, "</div>\n                  <div class=\"notice-manager-ui\" data-expanded=\"false\">\n                      <a href=\"").concat(baseURL + "?notice-manager-ban-body=" + body + "&notice-manager-ban-nice-body=" + this.message.body + "&notice-manager-redirect-url=" + redirectURL, "\">\n                          ").concat(this.i18n.ban_this_notice, "\t\t\t\t\n                      </a>\n                  </div>\n              </div>\n              ");
+      return "\n              <div class=\"notice-manager\">\n                  <div class=\"notice-manager-toggler\">".concat(this.translated.manage_notice, "</div>\n                  <div class=\"notice-manager-ui\" data-expanded=\"false\">\n                      <a href=\"").concat(baseURL + "?notice-manager-ban-body=" + body + "&notice-manager-ban-nice-body=" + this.message.body + "&notice-manager-redirect-url=" + redirectURL, "\">\n                          ").concat(this.translated.ban_this_notice, "\t\t\t\t\n                      </a>\n                  </div>\n              </div>\n              ");
     }
     /**
      * Adds the html of the ui to the message element
@@ -262,7 +266,7 @@ function () {
   }, {
     key: "show",
     value: function show() {
-      var _this4 = this;
+      var _this2 = this;
 
       if (this.message.element) {
         var domEl = this.$(this.html)[0];
@@ -270,7 +274,7 @@ function () {
         var toggler = domEl.children[0];
         var target = domEl.children[1];
         toggler.addEventListener("click", function () {
-          _this4.handleClick(toggler, target);
+          _this2.handleClick(toggler, target);
         });
       }
     }

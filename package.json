@@ -6,13 +6,26 @@
   "scripts": {
     "test": "jest",
     "build": "babel src -d js",
-    "watch": "npm-watch",
-    "build_babel": "npm run build"
+    "watch:test": "npm-watch test",
+    "watch:build": "npm-watch build",
+    "watch": "npm-watch" 
   },
   "watch": {
-    "build_babel": {
+    "build": {
       "patterns": [
         "src"
+      ],
+      "extensions": [
+        ""
+      ]
+    },
+    "test": {
+      "patterns": [
+        "src",
+        "test"
+      ],
+      "extensions": [
+        "js"
       ]
     }
   },

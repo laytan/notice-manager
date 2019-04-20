@@ -6,10 +6,9 @@ if ('undefined' !== typeof jQuery) {
 }
 
 class NoticeManager {
-    constructor($) {
-        this.$ = $;
+    constructor($ = jQuery) {
         this.noticeClasses = [".notice", ".update-nag", ".updated"];
-
+        this.$ = jQuery;
         // this.bans will be an array of Ban objects, noticeManagerBans is 'injected' by php
         this.bans = this.initBans(noticeManagerBans);
         this.notices = this.initNotices();
@@ -24,7 +23,7 @@ class NoticeManager {
     initBans(all) {
         let bans = [];
         all.forEach(one => {
-            const mes = new Message(this.$);
+            const mes = new Message();
             mes.fromDB(one);
             bans.push(mes);
         });
@@ -38,7 +37,7 @@ class NoticeManager {
         let notices = [];
         const all = this.$(this.noticeClasses.join(", "));
         all.each(i => {
-            const mes = new Message(this.$);
+            const mes = new Message();
             mes.fromDOM(all[i]);
             notices.push(mes);
         });
@@ -73,8 +72,7 @@ class NoticeManager {
 }
 
 class Message {
-    constructor($) {
-        this.$ = $;
+    constructor() {
         this.body;
         this.element;
         this.bodyNoWhitespace;
@@ -135,16 +133,17 @@ class Message {
      * Makes a new ui object and adds it to the message
      */
     addUI() {
-        const ui = new UI(this, this.$);
+        const ui = new UI(this);
         this.ui = ui;
     }
 }
 
 class UI {
-    constructor(mes, $, i = i18n) {
-        this.$ = $;
+    constructor(mes, location = window.location, translated = i18n, $ = jQuery) {
         this.message = mes;
-        this.i18n = i;
+        this.location = location;
+        this.translated = translated;
+        this.$ = $;
         this.html = this.initUI();
     }
 
@@ -154,13 +153,13 @@ class UI {
     currentPageWithoutOurParams() {
         // The url without query params
         let redirectURL =
-            location.protocol + "//" + location.host + location.pathname;
+            this.location.protocol + "//" + this.location.host + this.location.pathname;
         // If there are query params currently
-        if (location.search) {
+        if (this.location.search) {
             // Base array
             let params = [];
             // The search part of the url without the ?
-            const noQuestionMark = location.search.substring(1);
+            const noQuestionMark = this.location.search.substring(1);
             // Split the url on & because the & character specifies a new param
             const parts = noQuestionMark.split("&");
             // Populate param array with all the parameters
@@ -171,11 +170,17 @@ class UI {
                 });
             });
             // Take out all the params that start with notice-manager
-            params.filter(v => v.name.substring(0, 13) === "notice-manager");
+            params = params.filter(v => v.name.substring(0, 14) !== "notice-manager");
             // Add the ?
             redirectURL += "?";
             // Add the params back to the url
-            params.map(v => (redirectURL += v.name + "=" + v.value));
+            params.map((v, i) => {
+                redirectURL += v.name + "=" + v.value;
+                if (i !== params.length - 1) {
+                    redirectURL +=
+                        '&'
+                }
+            });
         }
         return redirectURL;
     }
@@ -185,12 +190,12 @@ class UI {
      */
     initUI() {
         const baseURL =
-            location.protocol + "//" + location.host + location.pathname;
+            this.location.protocol + "//" + this.location.host + this.location.pathname;
         const redirectURL = this.currentPageWithoutOurParams();
         const body = this.message.bodyNoWhitespace;
         return `
               <div class="notice-manager">
-                  <div class="notice-manager-toggler">${this.i18n.manage_notice}</div>
+                  <div class="notice-manager-toggler">${this.translated.manage_notice}</div>
                   <div class="notice-manager-ui" data-expanded="false">
                       <a href="${baseURL +
               "?notice-manager-ban-body=" +
@@ -199,7 +204,7 @@ class UI {
               this.message.body +
               "&notice-manager-redirect-url=" +
               redirectURL}">
-                          ${this.i18n.ban_this_notice}				
+                          ${this.translated.ban_this_notice}				
                       </a>
                   </div>
               </div>
