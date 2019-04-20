@@ -8,7 +8,7 @@ if ('undefined' !== typeof jQuery) {
 class NoticeManager {
     constructor($ = jQuery) {
         this.noticeClasses = [".notice", ".update-nag", ".updated"];
-        this.$ = jQuery;
+        this.$ = $;
         // this.bans will be an array of Ban objects, noticeManagerBans is 'injected' by php
         this.bans = this.initBans(noticeManagerBans);
         this.notices = this.initNotices();
