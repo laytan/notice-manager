@@ -1,8 +1,4 @@
-// (function ($) {
-//     "use strict";
-//     $(function () {
-//     });
-// })(jQuery);
+// Check if jquery is defined because it is not when we test
 if ('undefined' !== typeof jQuery) {
     jQuery(document).ready(($) => {
         const noticeManager = new NoticeManager($);
@@ -240,8 +236,11 @@ class UI {
     }
 }
 
-module.exports = {
-    UI,
-    NoticeManager,
-    Message
+// Export our classes for testing, browsers need a check because they don't support it
+if ('undefined' !== typeof module) {
+    module.exports = {
+        UI,
+        NoticeManager,
+        Message
+    }
 }

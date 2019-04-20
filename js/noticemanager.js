@@ -6,11 +6,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-// (function ($) {
-//     "use strict";
-//     $(function () {
-//     });
-// })(jQuery);
+// Check if jquery is defined because it is not when we test
 if ('undefined' !== typeof jQuery) {
   jQuery(document).ready(function ($) {
     var noticeManager = new NoticeManager($);
@@ -298,8 +294,13 @@ function () {
   }]);
 
   return UI;
-}();
+}(); // Export our classes for testing, browsers need a check because they don't support it
 
-module.exports = {
-  UI: UI
-};
+
+if ('undefined' !== typeof module) {
+  module.exports = {
+    UI: UI,
+    NoticeManager: NoticeManager,
+    Message: Message
+  };
+}
