@@ -1,6 +1,6 @@
 {
   "name": "notice-manager",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A lightweight plugin that lets you organize notices and notifications from other plugins or Wordpress itself. This is done by banning the specific notices.",
   "main": "js/index.js",
   "scripts": {

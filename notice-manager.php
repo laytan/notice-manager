@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Notice Manager
  * Description: A lightweight plugin that lets you organize notices and notifications from other plugins or wordpress itself.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Laytan Laats
  * Author URI: https://github.com/laytan
  * License: GNU GENERAL PUBLIC LICENSE
@@ -21,7 +21,7 @@ if ( ! is_admin() ) {
 }
 
 $base_url = plugin_dir_url( __FILE__ );
-$version = '1.0.0';
+$version = '1.0.1';
 
 // Create the plugin object
 require_once plugin_dir_path( __FILE__ ) . '/includes/class-notice-manager.php';

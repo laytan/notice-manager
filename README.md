@@ -2,8 +2,8 @@
 
 - Contributors: laytanl
 - Requires at least: 4.0
-- Tested up to: 5.1.1
-- Stable Tag: 1.0.0
+- Tested up to: 5.4
+- Stable Tag: 1.0.1
 - Requires PHP: 5.6
 - License: GNU GENERAL PUBLIC LICENSE
 - License URI: LICENSE.txt
@@ -25,6 +25,9 @@ or
 ## Frequently Asked Questions
 
 ## Changelog
+
+1.0.1
+Replace deprecated sanitize_url with esc_url_raw
 
 1.0.0
 Released

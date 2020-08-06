@@ -73,7 +73,7 @@ if ( ! class_exists( 'Notice_Manager' ) ) {
                 $this->database->insert_ban( $body , current_time( 'mysql' ), $nice_body );
                 
                 if ( isset( $_GET['notice-manager-redirect-url'] ) ) {
-                    $redirect_url = sanitize_url( $_GET['notice-manager-redirect-url'] );
+                    $redirect_url = esc_url_raw( $_GET['notice-manager-redirect-url'] );
                     $this->redirect( $redirect_url );
                 } else {
                     $this->redirect( get_admin_url() );
